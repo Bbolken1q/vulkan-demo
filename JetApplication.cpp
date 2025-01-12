@@ -1,14 +1,14 @@
-#include "NameApplication.hpp"
+#include "JetApplication.hpp"
 #include "helperFunctions.hpp"
 
-void NameApplication::run() {
+void JetApplication::run() {
     initWindow();
     initVulkan();
     mainLoop();
     cleanup();
 }
 
-void NameApplication::initWindow() { // initialize glfw window (WINDOW SUPPOSEDLY WORKS ONLY AFTER DRAW ON WAYLAND, DO NOT )
+void JetApplication::initWindow() { // initialize glfw window (WINDOW SUPPOSEDLY WORKS ONLY AFTER DRAW ON WAYLAND, DO NOT )
     glfwInit();
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
@@ -16,7 +16,7 @@ void NameApplication::initWindow() { // initialize glfw window (WINDOW SUPPOSEDL
     std::cout<<"initialized window" << std::endl;
 }
 
-void NameApplication::createInstance() /*
+void JetApplication::createInstance() /*
 * vulkan-tutorial.com said to do this so i did
 * Initializes a bunch of important stuff vulkan needs (version data & such)
 */
@@ -45,19 +45,19 @@ void NameApplication::createInstance() /*
 
 
 
-void NameApplication::initVulkan() {
+void JetApplication::initVulkan() {
     createInstance();
     pickPhysicalDevice();
     createLogicalDevice();
 }
 
-void NameApplication::mainLoop() {
+void JetApplication::mainLoop() {
     while (!glfwWindowShouldClose(this->window)) {
         glfwPollEvents();
     }
 }
 
-void NameApplication::pickPhysicalDevice() { // programmer went to jail for rendering on cpu // TODO: PICK A FUCKING GPU
+void JetApplication::pickPhysicalDevice() { // programmer went to jail for rendering on cpu // TODO: PICK A FUCKING GPU
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(this->instance, &deviceCount, nullptr);
     if (deviceCount == 0) {
@@ -82,12 +82,12 @@ void NameApplication::pickPhysicalDevice() { // programmer went to jail for rend
     }
 }
 
-void NameApplication::cleanup() { // TODO: destroy stuff that needs to be destroyed because i only leak out of my peanits
+void JetApplication::cleanup() { // TODO: destroy stuff that needs to be destroyed because i only leak out of my peanits
     vkDestroyInstance(instance, nullptr);
     glfwDestroyWindow(this->window);
     glfwTerminate();
 }
 
-void NameApplication::createLogicalDevice() {
+void JetApplication::createLogicalDevice() {
 
 }

@@ -2,11 +2,11 @@
 #include <stdexcept>
 #include <cstdlib>
 #include <vector>
-#include "NameApplication.hpp"
+#include "JetApplication.hpp"
 
 
 int main() {
-    NameApplication app;
+    JetApplication app;
 
     try {
         app.run();

@@ -6,7 +6,7 @@
 #include <cstdlib>
 #include <vector>
 
-class NameApplication {
+class JetApplication {
 public:
     void run();
 
