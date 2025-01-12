@@ -65,4 +65,4 @@ int rateDeviceSuitability(VkPhysicalDevice dev) {
     }
 }
 
-//last ended on https://vulkan-tutorial.com/en/Drawing_a_triangle/Setup/Logical_device_and_queues
+//last ended on https://vulkan-tutorial.com/en/Drawing_a_triangle/Presentation/Window_surface
