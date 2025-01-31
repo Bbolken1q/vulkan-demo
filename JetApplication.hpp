@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <cstdlib>
 #include <vector>
+#include <set>
 
 class JetApplication {
 public:
@@ -25,6 +26,7 @@ private:
     bool enableValidationLayers = false;
     VkQueue graphicsQueue;
     VkSurfaceKHR surface;
+    VkQueue presentQueue;
 
     void initWindow();
 

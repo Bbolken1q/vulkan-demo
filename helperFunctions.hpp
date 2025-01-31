@@ -9,38 +9,60 @@
 
 struct QueueFamilyIndices {
     std::optional<uint32_t> graphicsFamily;
+    std::optional<uint32_t> presentFamily;
 
     bool isComplete() {
-        return graphicsFamily.has_value();
+        return graphicsFamily.has_value() && presentFamily.has_value();
     }
 };
 
-QueueFamilyIndices findQueueFamilies(VkPhysicalDevice dev) {
-    QueueFamilyIndices indices;
-    uint32_t queueFamilyCount = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(dev, &queueFamilyCount, nullptr);
+QueueFamilyIndices findQueueFamilies(VkPhysicalDevice dev, VkSurfaceKHR surface) {
+        QueueFamilyIndices indices;
 
-    std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(dev, &queueFamilyCount, queueFamilies.data());
+        uint32_t queueFamilyCount = 0;
+        vkGetPhysicalDeviceQueueFamilyProperties(dev, &queueFamilyCount, nullptr);
 
-    int i = 0;
-    for (const auto& queueFamily : queueFamilies) {
-        if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
-            indices.graphicsFamily = i;
+        std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+        vkGetPhysicalDeviceQueueFamilyProperties(dev, &queueFamilyCount, queueFamilies.data());
+
+        int i = 0;
+        for (const auto& queueFamily : queueFamilies) {
+            if (queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+                indices.graphicsFamily = i;
+            }
+
+            VkBool32 presentSupport = false;
+            vkGetPhysicalDeviceSurfaceSupportKHR(dev, i, surface, &presentSupport);
+
+            if (presentSupport) {
+                indices.presentFamily = i;
+            }
+
+            if (indices.isComplete()) {
+                break;
+            }
+
+            i++;
         }
 
-        if (indices.isComplete()) {
-            break;
-        }
-
-        i++;
+        return indices;
     }
 
-    return indices;
-}
+bool isDeviceSuitable(VkPhysicalDevice dev, VkSurfaceKHR surface) { // TODO: should probably write wrapper for device
+    QueueFamilyIndices indices = findQueueFamilies(dev, surface);
 
-bool isDeviceSuitable(VkPhysicalDevice dev) { // TODO: should probably write wrapper for device
-    QueueFamilyIndices indices = findQueueFamilies(dev);
+    std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+    std::set<uint32_t> uniqueQueueFamilies = {indices.graphicsFamily.value(), indices.presentFamily.value()};
+
+    float queuePriority = 1.0f;
+    for (uint32_t queueFamily : uniqueQueueFamilies) {
+        VkDeviceQueueCreateInfo queueCreateInfo{};
+        queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        queueCreateInfo.queueFamilyIndex = queueFamily;
+        queueCreateInfo.queueCount = 1;
+        queueCreateInfo.pQueuePriorities = &queuePriority;
+        queueCreateInfos.push_back(queueCreateInfo);
+    }
 
     return indices.graphicsFamily.has_value();
 }
@@ -65,4 +87,4 @@ int rateDeviceSuitability(VkPhysicalDevice dev) {
     }
 }
 
-//last ended on https://vulkan-tutorial.com/en/Drawing_a_triangle/Presentation/Window_surface
+//last ended on https://vulkan-tutorial.com/en/Drawing_a_triangle/Presentation/Swap_chain
